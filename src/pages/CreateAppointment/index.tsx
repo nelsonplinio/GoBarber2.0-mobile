@@ -60,7 +60,7 @@ interface HourDayPeriod {
 const CreateAppointment: React.FC = () => {
   const { user } = useAuth();
   const route = useRoute();
-  const { goBack } = useNavigation();
+  const { goBack, navigate } = useNavigation();
   const routeParams = route.params as RouteParams;
 
   const [loading, setLoading] = useState(false);
@@ -112,7 +112,7 @@ const CreateAppointment: React.FC = () => {
     setSelectedHour(hour);
   }, []);
 
-  const handleScheduleAppointment = useCallback(async () => {
+  const handleCreateAppointment = useCallback(async () => {
     if (!selectedHour) {
       Alert.alert('Horário necessario', 'Selecione um horário para agendar.');
       return;
@@ -126,12 +126,12 @@ const CreateAppointment: React.FC = () => {
         date: selectedHour?.hourDate,
       });
 
-      goBack();
-
-      Alert.alert(
-        'Agendamento concluido',
-        `Seu agendamento foi feito com sucesso para ${selectedDateFormatted} às ${selectedHour.hourFormatted}`,
-      );
+      navigate('AppointmentCreated', {
+        date: selectedHour?.hourDate.getTime(),
+        provider: JSON.stringify(
+          providers.find(({ id }) => selectedProvider === id),
+        ),
+      });
     } catch (error) {
       if (error.response) {
         Alert.alert('Erro no agendamento', error.response.data.message);
@@ -145,7 +145,7 @@ const CreateAppointment: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }, [selectedHour, selectedDateFormatted, selectedProvider, goBack]);
+  }, [selectedHour, selectedProvider, navigate, providers]);
 
   useEffect(() => {
     async function loadProviders(): Promise<void> {
@@ -324,7 +324,7 @@ const CreateAppointment: React.FC = () => {
         <Button
           loading={loading}
           enabled={!!selectedHour}
-          onPress={handleScheduleAppointment}
+          onPress={handleCreateAppointment}
           style={{ marginHorizontal: '5%', marginVertical: 22, width: '90%' }}
         >
           Agendar

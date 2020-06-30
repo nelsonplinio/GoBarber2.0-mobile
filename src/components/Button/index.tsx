@@ -1,7 +1,7 @@
 import React from 'react';
 import { ActivityIndicator } from 'react-native';
 import { RectButtonProperties } from 'react-native-gesture-handler';
-import { Container, ButtonText } from './styles';
+import { ButtonText, Container } from './styles';
 
 interface ButtonProps extends RectButtonProperties {
   children: string;
@@ -11,7 +11,7 @@ interface ButtonProps extends RectButtonProperties {
 const Button: React.FC<ButtonProps> = ({
   children,
   loading = false,
-  enabled,
+  enabled = true,
   ...rest
 }) => {
   return (
