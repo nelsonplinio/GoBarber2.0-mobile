@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import {
   Image,
   KeyboardAvoidingView,
@@ -44,6 +44,8 @@ const SignIn: React.FC = () => {
 
   const { signIn } = useAuth();
 
+  const [loading, setLoading] = useState(false);
+
   const handleSignIn = useCallback(
     async (data: SignInFormData) => {
       try {
@@ -59,6 +61,8 @@ const SignIn: React.FC = () => {
           abortEarly: false,
         });
 
+        setLoading(true);
+
         await signIn({
           email: data.email,
           password: data.password,
@@ -73,6 +77,8 @@ const SignIn: React.FC = () => {
           'Erro na autenticação',
           'Ocorreu um erro ao fazer login, cheque as credenciais.',
         );
+      } finally {
+        setLoading(false);
       }
     },
     [signIn],
@@ -119,7 +125,10 @@ const SignIn: React.FC = () => {
                 onSubmitEditing={() => formRef.current?.submitForm()}
               />
             </Form>
-            <Button onPress={() => formRef.current?.submitForm()}>
+            <Button
+              loading={loading}
+              onPress={() => formRef.current?.submitForm()}
+            >
               Entrar
             </Button>
             <ForgotPassword>

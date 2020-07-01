@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { Form } from '@unform/mobile';
 import { FormHandles } from '@unform/core';
@@ -37,6 +37,8 @@ const SignUp: React.FC = () => {
   const emailInputRef = useRef<TextInput>(null);
   const passwordInputRef = useRef<TextInput>(null);
 
+  const [loading, setLoading] = useState(false);
+
   const handleSubmit = useCallback(
     async (data: FormData) => {
       try {
@@ -53,6 +55,8 @@ const SignUp: React.FC = () => {
         await schema.validate(data, {
           abortEarly: false,
         });
+
+        setLoading(true);
 
         const { name, email, password } = data;
 
@@ -81,6 +85,8 @@ const SignUp: React.FC = () => {
           'Erro no cadastro',
           'Deu um erro ao realizar o cadastro, tente novamente.',
         );
+      } finally {
+        setLoading(false);
       }
     },
     [navigation],
@@ -137,7 +143,10 @@ const SignUp: React.FC = () => {
                 onSubmitEditing={() => formRef.current?.submitForm()}
               />
             </Form>
-            <Button onPress={() => formRef.current?.submitForm()}>
+            <Button
+              loading={loading}
+              onPress={() => formRef.current?.submitForm()}
+            >
               Cadastrar
             </Button>
           </Container>
