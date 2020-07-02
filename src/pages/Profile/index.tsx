@@ -191,8 +191,8 @@ const Profile: React.FC = () => {
         const data = new FormData();
 
         data.append('avatar', {
-          name: `${user.id}.jpg`,
-          type: 'image/jpeg',
+          name: response.fileName,
+          type: response.type,
           uri: response.uri,
         });
 
@@ -201,7 +201,7 @@ const Profile: React.FC = () => {
         });
       },
     );
-  }, [updateProfile, user.id]);
+  }, [updateProfile]);
 
   return (
     <ScrollView>
